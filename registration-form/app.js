@@ -12,7 +12,7 @@
 
   // Google Apps Script web app URL. Blank runs the form in local test mode:
   // it validates and confirms as normal but logs instead of sending.
-  var ENDPOINT = '';
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzc6cuv_YNF-kVMGvvmsj8ijKUhWqSwstjft-E9iUr5ZvazPgNRBikLkKq4TIuiJAtt/exec';
 
   var SCHOOL_YEAR = '2026-2027';   // fallback if the radio is somehow unset
   var MIN_CHILDREN = 1;
