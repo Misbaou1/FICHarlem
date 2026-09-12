@@ -14,7 +14,7 @@
   // it validates and confirms as normal but logs instead of sending.
   var ENDPOINT = '';
 
-  var SCHOOL_YEAR = '2026-2027';
+  var SCHOOL_YEAR = '2026-2027';   // fallback if the radio is somehow unset
   var MIN_CHILDREN = 1;
   var MAX_CHILDREN = 10;
   var REGISTRATION_PER_CHILD = 50;
@@ -89,6 +89,12 @@
     return (TEXT[lang] && TEXT[lang][key]) || TEXT.en[key] || '';
   }
 
+  // French writes the symbol after the number (100 $), English before ($100).
+  // Every amount on the page goes through here so the two never diverge.
+  function money(amount) {
+    return lang === 'fr' ? amount + ' $' : '$' + amount;
+  }
+
   function fill(template, values) {
     return Object.keys(values).reduce(function (out, k) {
       return out.replace('{' + k + '}', values[k]);
@@ -126,6 +132,7 @@
     if (!root) {
       document.documentElement.lang = lang;
       renderFees();
+      buildStepNav();
     }
   }
 
@@ -217,6 +224,54 @@
     });
   }
 
+  // Jump bar. Built from the sections themselves so it cannot fall out of step
+  // with them, and it disappears when there is nothing to jump to.
+  function buildStepNav() {
+    var nav = document.getElementById('stepNav');
+    if (!nav) return;
+
+    var sections = form.querySelectorAll('.reg-card > h2 > .step');
+    if (!sections.length) return;
+
+    nav.textContent = '';
+    Array.prototype.forEach.call(sections, function (badge) {
+      var card = badge.closest('.reg-card');
+      var title = badge.parentNode.querySelector('[data-t]');
+      if (!card.id) card.id = 'sec-' + badge.textContent;
+
+      var link = document.createElement('a');
+      link.className = 'stepnav-item';
+      link.href = '#' + card.id;
+      link.innerHTML = '<span class="stepnav-num">' + badge.textContent + '</span>';
+      link.appendChild(document.createTextNode(title ? title.textContent : ''));
+      link.dataset.for = card.id;
+      nav.appendChild(link);
+    });
+
+    watchSections();
+  }
+
+  // Mark whichever section is in view, so the bar says where you are rather
+  // than only where you can go.
+  function watchSections() {
+    if (!('IntersectionObserver' in window)) return;
+
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        document.querySelectorAll('.stepnav-item').forEach(function (item) {
+          var on = item.dataset.for === entry.target.id;
+          item.classList.toggle('on', on);
+          if (on && item.scrollIntoView) {
+            item.scrollIntoView({block: 'nearest', inline: 'center'});
+          }
+        });
+      });
+    }, {rootMargin: '-45% 0px -45% 0px'});
+
+    form.querySelectorAll('.reg-card[id]').forEach(function (card) { seen.observe(card); });
+  }
+
   function childCount() {
     return cardHost.querySelectorAll('.student-card').length;
   }
@@ -244,25 +299,47 @@
     var children = childCount();
     var monthlyPlan = quote(children, 'Monthly');
     var yearPlan = quote(children, 'Full year');
-    var chosen = quote(children, selectedPlan());
+    var plan = selectedPlan();
+    var chosen = quote(children, plan);
+
+    // Say the rate in words before showing any sums. The figure is for the
+    // whole family, and parents reasonably assume it is per child.
+    document.getElementById('tuitionWho').textContent =
+      children === 1 ? t('whoOne') : fill(t('whoMany'), { n: children });
+    document.getElementById('tuitionRate').textContent =
+      fill(t('aMonth'), { amount: chosen.monthly });
+
+    highlightRate(children);
 
     // both cards always show a price so the two can be compared
-    document.getElementById('planMonthlyDue').textContent = '$' + monthlyPlan.dueToday;
-    document.getElementById('planYearDue').textContent = '$' + yearPlan.dueToday;
+    document.getElementById('planMonthlyDue').textContent = money(monthlyPlan.dueToday);
+    document.getElementById('planYearDue').textContent = money(yearPlan.dueToday);
     document.getElementById('planMonthlyAfter').textContent =
       fill(t('afterThat'), { monthly: monthlyPlan.monthly });
 
-    document.getElementById('regFee').textContent = '$' + chosen.registration;
+    // show the arithmetic, not just the answer
+    document.getElementById('regFee').textContent = money(chosen.registration);
     document.getElementById('regBasis').textContent =
-      children === 1 ? t('regOne') : fill(t('regMany'), { n: children });
+      fill(t('regEach'), { amount: REGISTRATION_PER_CHILD });
 
-    document.getElementById('tuitionNow').textContent = '$' + chosen.tuitionNow;
+    document.getElementById('tuitionNow').textContent = money(chosen.tuitionNow);
     document.getElementById('tuitionBasis').textContent =
-      selectedPlan() === 'Full year'
-        ? t('twelveMonths')
-        : fill(t('threeMonths'), { monthly: '$' + chosen.monthly });
+      plan === 'Full year' ? t('tuiYear') : t('tuiThree');
 
-    document.getElementById('dueNow').textContent = '$' + chosen.dueToday;
+    document.getElementById('dueNow').textContent = money(chosen.dueToday);
+
+    document.getElementById('afterToday').textContent = plan === 'Full year'
+      ? t('afterYear')
+      : fill(t('afterMonthly'), { amount: chosen.monthly });
+  }
+
+  // Mark the row the family actually falls on, so the rate table reads as
+  // "this is you" rather than a wall of numbers.
+  function highlightRate(children) {
+    var band = children > 3 ? 4 : children;
+    document.querySelectorAll('#rateTable tr[data-rate]').forEach(function (row) {
+      row.classList.toggle('on', Number(row.dataset.rate) === band);
+    });
   }
 
   incButton.addEventListener('click', function () {
@@ -290,14 +367,22 @@
     saveDraft();
   });
 
+  function fillAge(el) {
+    if (el.dataset.field !== 'dob') return;
+    el.closest('.student-card').querySelector('[data-field="age"]').value =
+      ageOn(el.value);
+  }
+
+  // A date input fires 'change' when a date is picked from the calendar, but
+  // someone typing it gets 'input' events and no 'change' until they leave the
+  // field. Listening only for 'change' left the age blank for anyone who typed.
+  cardHost.addEventListener('input', function (e) {
+    fillAge(e.target);
+  });
+
   cardHost.addEventListener('change', function (e) {
     var el = e.target;
-
-    if (el.dataset.field === 'dob') {
-      el.closest('.student-card').querySelector('[data-field="age"]').value =
-        ageOn(el.value);
-    }
-
+    fillAge(el);
     if (el.classList.contains('toggle')) revealFollowUp(el);
   });
 
@@ -377,6 +462,8 @@
     return value.replace(/\D/g, '').length;
   }
 
+  var missingCount = 0;
+
   function validate() {
     clearAllErrors();
 
@@ -389,9 +476,9 @@
     form.querySelectorAll('[required]').forEach(function (el) {
       if (el.closest('[hidden]')) return;
 
-      var blank = el.type === 'checkbox' ? !el.checked : !el.value.trim();
+      var blank = el.type === 'reg-check' ? !el.checked : !el.value.trim();
       if (blank) {
-        flag(el, el.type === 'checkbox' ? t('errCheck') : t('errRequired'));
+        flag(el, el.type === 'reg-check' ? t('errCheck') : t('errRequired'));
       }
     });
 
@@ -421,10 +508,20 @@
       if (el.value.trim() && !looksLikeEmail(el.value.trim())) flag(el, t('errEmail'));
     });
 
-    ['g1Phone', 'emPhone'].forEach(function (id) {
+    ['g1Phone', 'g2Phone', 'emPhone'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el.value.trim() && digitsIn(el.value) < 10) flag(el, t('errPhone'));
     });
+
+    // The second parent is optional, but a name with no phone and no email is
+    // of no use to the office - they cannot ring it.
+    var g2Name = document.getElementById('g2Name');
+    var g2Phone = document.getElementById('g2Phone');
+    var g2Email = document.getElementById('g2Email');
+    var namedSomeone = g2Name.value.trim() || chosen('g2Rel');
+    if (namedSomeone && !g2Phone.value.trim() && !g2Email.value.trim()) {
+      flag(g2Phone, t('errG2Contact'));
+    }
 
     cardHost.querySelectorAll('[data-field="dob"]').forEach(function (el) {
       if (el.value && new Date(el.value) > new Date()) flag(el, t('errFuture'));
@@ -437,6 +534,10 @@
         signed.value.trim().toLowerCase() !== printed) {
       flag(signed, t('errSignature'));
     }
+
+    missingCount = form.querySelectorAll('.error').length &&
+      Array.prototype.filter.call(form.querySelectorAll('.error'),
+        function (e) { return e.textContent.trim(); }).length;
 
     if (!firstBad) return true;
 
@@ -486,7 +587,7 @@
     return {
       submittedAt: new Date().toISOString(),
       language: lang,
-      academicYear: SCHOOL_YEAR,
+      academicYear: chosen('academicYear') || SCHOOL_YEAR,
       studentCount: children.length,
       students: children,
 
@@ -540,7 +641,7 @@
       form.querySelectorAll('input[id], textarea[id]').forEach(function (el) {
         if (el.closest('.student-card')) return;
         if (SKIP_IN_DRAFT.indexOf(el.id) !== -1) return;
-        snapshot.fields[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        snapshot.fields[el.id] = el.type === 'reg-check' ? el.checked : el.value;
       });
       ['g1Rel', 'g2Rel'].forEach(function (n) { snapshot[n] = chosen(n); });
       localStorage.setItem(DRAFT_KEY, JSON.stringify(snapshot));
@@ -577,7 +678,7 @@
     Object.keys(saved.fields || {}).forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
-      if (el.type === 'checkbox') el.checked = saved.fields[id];
+      if (el.type === 'reg-check') el.checked = saved.fields[id];
       else el.value = saved.fields[id];
     });
 
@@ -657,8 +758,11 @@
     if (document.getElementById('website').value) return;
 
     if (!validate()) {
-      statusLine.textContent = t('errTop');
+      statusLine.textContent = missingCount === 1
+        ? t('errTopOne')
+        : fill(t('errTopMany'), { n: missingCount });
       statusLine.className = 'status err';
+      statusLine.setAttribute('role', 'alert');
       return;
     }
 

@@ -1,0 +1,719 @@
+.futa-reg{font-size:18.5px;line-height:1.5;text-align:left;}
+/* colors and shared bits */
+.futa-reg {
+  --green-dark: #1d5c33;
+  --green-mid: #35913d;
+  --green: #40aa49;   /* the green used on ficny.org */
+  --green-pale: #eaf6eb;
+  --gold: #c9a227;
+  --ink: #14211c;
+  --muted: #47564e;
+  --line: #d9e3de;
+  --bg: #f5f8f6;
+  --card: #fff;
+  --danger: #b3261e;
+  --radius: 6px;
+}
+
+.futa-reg * { box-sizing: border-box; }
+
+.futa-reg { font-size: 18.5px; }
+
+.futa-reg {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 18.5px/1.5 Lato, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.futa-reg .page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 13.88px 18.5px 55.5px;
+}
+
+/* language switch, sticky so it is reachable anywhere on the page */
+.futa-reg .langbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 9.25px;
+  justify-content: flex-end;
+  padding: 11.1px 18.5px;
+  background: rgba(245, 248, 246, .95);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+.futa-reg .lang {
+  padding: 9.25px 18.5px;
+  font: inherit;
+  font-size: 17.57px;
+  font-weight: 600;
+  color: var(--muted);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 30px;
+  cursor: pointer;
+}
+.futa-reg .lang.on {
+  color: #fff;
+  background: var(--green-mid);
+  border-color: var(--green-mid);
+}
+
+/* header - laid out like the letterhead on the paper form */
+.futa-reg .masthead {
+  text-align: center;
+  padding: 24.98px 18.5px 21.27px;
+  margin-bottom: 18.5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--green-dark);
+  border-radius: 4px;
+}
+.futa-reg .logo {
+  width: auto;
+  height: 104px;
+  margin: 0 auto 9.25px;
+  display: block;
+}
+.futa-reg .bismillah {
+  margin: 0 0 11.1px;
+  font-size: 23.12px;
+  color: var(--green-dark);
+}
+.futa-reg .masthead h1 {
+  margin: 0;
+  font-size: 29.6px;
+  letter-spacing: -.2px;
+  color: var(--green-dark);
+}
+.futa-reg .subtitle {
+  margin: 6.47px 0 0;
+  font-size: 19.43px;
+  color: var(--muted);
+}
+.futa-reg .addr {
+  margin: 14.8px auto 0;
+  padding-top: 12.95px;
+  max-width: 555px;
+  border-top: 1px solid var(--line);
+  font-size: 17.02px;
+  color: var(--muted);
+}
+
+.futa-reg .intro {
+  max-width: 52ch;
+  margin: 0 auto 16.65px;
+  text-align: center;
+  font-size: 19.43px;
+  color: var(--muted);
+}
+
+.futa-reg .helpline {
+  margin: 0 0 18.5px;
+  padding: 12.03px;
+  text-align: center;
+  font-size: 19.43px;
+  background: #fff8e1;
+  border: 1px solid #f0e2ae;
+  border-radius: var(--radius);
+}
+.futa-reg .helpline a { color: var(--green-dark); font-weight: 700; white-space: nowrap; }
+
+/* cards */
+.futa-reg .reg-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 17.57px 19.43px;
+  margin-bottom: 12.95px;
+}
+.futa-reg .reg-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 11.1px;
+  flex-wrap: wrap;
+  margin: 0 0 12.95px;
+  font-size: 21.27px;
+  color: var(--green-dark);
+  padding-bottom: 8.33px;
+  border-bottom: 2px solid var(--green-pale);
+}
+.futa-reg .step {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  font-size: 17.57px;
+  color: #fff;
+  background: var(--green-mid);
+  border-radius: 4px;
+}
+.futa-reg .reg-lead {
+  max-width: 60ch;
+  margin: -9.25px 0 15.72px;
+  color: var(--muted);
+  font-size: 18.5px;
+}
+.futa-reg .reg-lead.private { margin: 9.25px 0 0; font-size: 17.57px; font-style: italic; }
+.futa-reg .optional {
+  font-size: 16.28px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--green-pale);
+  border-radius: 20px;
+  padding: 3.7px 12.95px;
+}
+
+/* short rules list */
+.futa-reg .rules-short { list-style: none; margin: 0 0 16.65px; padding: 0; }
+.futa-reg .rules-short li {
+  display: flex;
+  gap: 18.5px;
+  align-items: flex-start;
+  max-width: 62ch;
+  padding: 8.33px 0;
+  border-bottom: 1px solid var(--green-pale);
+}
+.futa-reg .rules-short li:last-child { border-bottom: none; }
+.futa-reg .sprite { display: none; }
+
+/* line icons, drawn with currentColor so they follow the text */
+.futa-reg .ico, .futa-reg .kid-ico {
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: var(--green-mid);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.futa-reg .ico { margin-top: 3.7px; }
+.futa-reg .kid-ico { width: 20px; height: 20px; stroke: var(--green-dark); }
+
+.futa-reg .full-rules { margin-bottom: 23.12px; }
+.futa-reg .full-rules summary {
+  padding: 17.57px 18.5px;
+  font-size: 19.43px;
+  font-weight: 700;
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-radius: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.futa-reg .full-rules summary::-webkit-details-marker { display: none; }
+
+.futa-reg .full-rules[open] summary { border-radius: 8px 8px 0 0; }
+.futa-reg .rules-long {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 18.5px 21.27px;
+  font-size: 18.5px;
+  line-height: 1.55;
+  background: #fbfdfc;
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+.futa-reg .rules-long h3 { margin: 25.9px 0 9.25px; font-size: 17.57px; color: var(--green-dark); }
+.futa-reg .rules-long h3:first-of-type { margin-top: 9.25px; }
+.futa-reg .rules-long p { margin: 0 0 12.95px; }
+.futa-reg .ayah { color: var(--green-dark); font-style: italic; }
+.futa-reg .rules-long .note {
+  padding: 14.8px;
+  background: #fff8e1;
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+}
+
+/* form fields */
+.futa-reg .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11.1px 15.72px; }
+.futa-reg .span-2 { grid-column: 1 / -1; }
+.futa-reg .field { display: flex; flex-direction: column; }
+/* direct child only: the answer buttons are labels nested inside .choices,
+   and a descendant selector here outranks .choice and resizes them too */
+.futa-reg .field > label {
+  max-width: 60ch;
+  margin-bottom: 5.55px;
+  font-size: 19.43px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.futa-reg .req { color: var(--danger); }
+
+.futa-reg input[type="text"], .futa-reg input[type="email"], .futa-reg input[type="tel"], .futa-reg input[type="date"], .futa-reg input[type="number"], .futa-reg textarea {
+  width: 100%;
+  padding: 11.1px 13.88px;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+.futa-reg input:focus, .futa-reg textarea:focus, .futa-reg .choice:focus-within {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(64, 170, 73, .22);
+}
+.futa-reg input.invalid, .futa-reg textarea.invalid { border-color: var(--danger); }
+.futa-reg textarea { resize: vertical; }
+.futa-reg .readonly { background: var(--green-pale); font-weight: 700; }
+.futa-reg .sig { font-family: "Snell Roundhand", "Brush Script MT", cursive; font-size: 24.05px; }
+
+.futa-reg .error { margin: 8.33px 0 0; font-size: 18.5px; font-weight: 600; color: var(--danger); }
+.futa-reg .error:empty { display: none; }
+
+/* big tap targets instead of dropdowns */
+/* Answers size to their own words. A two-column grid gave "Yes" the same
+   width as "A parent comes to get them", which looked like a mistake. */
+.futa-reg .choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5.55px;
+}
+.futa-reg .choices.two { grid-template-columns: repeat(2, 1fr); }
+.futa-reg .choices.three { grid-template-columns: repeat(3, 1fr); }
+.futa-reg .choices.invalid .choice { border-color: var(--danger); }
+
+.futa-reg .choice {
+  flex: 0 1 auto;
+  min-width: 64.75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.85px;
+  min-height: 34px;
+  padding: 3.7px 12.95px;
+  font-size: 15.17px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--muted);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.futa-reg .choice input { position: absolute; opacity: 0; pointer-events: none; }
+.futa-reg .choice small { font-weight: 400; font-size: 13.32px; color: var(--muted); }
+.futa-reg .choice:hover { border-color: var(--green); }
+.futa-reg .choice:has(input:checked) {
+  color: var(--green-dark);
+  font-weight: 700;
+  background: var(--green-pale);
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+.futa-reg .choice:has(input:checked)::after {
+  content: "✓";
+  position: absolute;
+  transform: translate(calc(50% + 20.35px), -21.27px);
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* payment plans */
+.futa-reg .plans { display: grid; grid-template-columns: repeat(2, 1fr); margin-bottom: 23.12px; }
+.futa-reg .plan { position: relative; min-height: 0; gap: 2.77px; padding: 12.95px 11.1px; }
+.futa-reg .plan-name { font-size: 16.65px; }
+.futa-reg .plan-big { font-size: 27.75px; font-weight: 700; color: var(--green-dark); }
+.futa-reg .plan-note, .futa-reg .plan-after { font-weight: 400; }
+.futa-reg .plan-after { color: var(--muted); }
+.futa-reg .reg-badge {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  padding: 3.7px 12.95px;
+  font-size: 15.72px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--gold);
+  border-radius: 20px;
+}
+
+/* checkboxes */
+.futa-reg .reg-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 11.1px;
+  padding: 7.4px 9.25px;
+  margin-bottom: 4.62px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.futa-reg .reg-check:has(input:checked) { background: var(--green-pale); border-color: var(--green); }
+.futa-reg .reg-check input { width: 22px; height: 22px; flex-shrink: 0; accent-color: var(--green); }
+.futa-reg .reg-check.big { font-size: 17.57px; line-height: 1.4; }
+.futa-reg .soft { border: none; border-top: 1px solid var(--line); margin: 27.75px 0 18.5px; }
+
+/* counter */
+.futa-reg .counter-row { display: flex; align-items: center; justify-content: center; gap: 18.5px; }
+.futa-reg .counter-btn {
+  width: 64px;
+  height: 64px;
+  font-size: 37px;
+  line-height: 1;
+  color: var(--green-mid);
+  background: var(--green-pale);
+  border: 2px solid var(--green);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.futa-reg .counter-btn:active { transform: scale(.94); }
+.futa-reg .counter-btn:disabled { opacity: .35; cursor: not-allowed; border-color: var(--line); }
+.futa-reg #studentCount {
+  width: 90px;
+  text-align: center;
+  font-size: 37px;
+  font-weight: 700;
+  padding: 7.4px;
+}
+
+/* child cards */
+.futa-reg .student-card { border-left: 5px solid var(--green); }
+.futa-reg .student-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18.5px;
+  margin-bottom: 12.95px;
+  padding-bottom: 8.33px;
+  border-bottom: 2px solid var(--green-pale);
+}
+.futa-reg .student-head h2 { margin: 0; padding: 0; border: none; }
+
+.futa-reg .remove-btn {
+  padding: 9.25px 16.65px;
+  font: inherit;
+  font-size: 16.65px;
+  font-weight: 600;
+  color: var(--danger);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.futa-reg .remove-btn:hover { background: #fdecea; border-color: var(--danger); }
+
+.futa-reg .conditional {
+  padding: 11.1px;
+  background: #fbfdfc;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+}
+
+/* fee table */
+.futa-reg .tuition { border-left: 5px solid var(--gold); }
+.futa-reg .fees { width: 100%; border-collapse: collapse; margin-bottom: 16.65px; }
+.futa-reg .fees td { padding: 8.33px 4.62px; border-bottom: 1px solid var(--line); }
+.futa-reg .fees .amt { text-align: right; font-weight: 700; white-space: nowrap; }
+.futa-reg .fees .total td {
+  border-bottom: none;
+  border-top: 3px solid var(--green-dark);
+  font-size: 22.2px;
+  color: var(--green-dark);
+}
+.futa-reg .fees-detail { display: block; font-size: 17.57px; color: var(--muted); }
+.futa-reg .pay-note { margin: 0; font-size: 18.5px; }
+
+/* submit and result */
+.futa-reg .actions { text-align: center; margin-top: 20.35px; }
+.futa-reg .submit-btn {
+  width: 100%;
+  max-width: 420px;
+  padding: 16.65px 37px;
+  font: inherit;
+  font-size: 21.27px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--green-mid);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.futa-reg .submit-btn:hover:not(:disabled) { background: var(--green); }
+.futa-reg .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+.futa-reg .submit-btn.ghost { color: var(--green-dark); background: var(--green-pale); }
+
+.futa-reg .status { margin-top: 18.5px; font-weight: 600; }
+.futa-reg .status.err { color: var(--danger); }
+
+.futa-reg .success { text-align: center; padding: 46.25px 27.75px; }
+.futa-reg .success h2 { display: block; border: none; padding: 0; font-size: 27.75px; }
+.futa-reg .check {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18.5px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--green);
+  border-radius: 50%;
+}
+.futa-reg .check svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.futa-reg .foot { text-align: center; font-size: 17.57px; color: var(--muted); margin-top: 37px; }
+.futa-reg .foot p { margin: 5.55px 0; }
+.futa-reg .foot a { color: var(--green-dark); }
+
+/* phones */
+@media (max-width: 620px) {
+  .futa-reg { font-size: 17.5px; }
+  .futa-reg .page { padding: 13.88px 13.88px 55.5px; }
+  .futa-reg .reg-card { padding: 21.27px; }
+  .futa-reg .grid { grid-template-columns: 1fr; }
+  .futa-reg .masthead h1 { font-size: 29.6px; }
+  .futa-reg .choice { flex: 1 1 auto; }      /* fill the row on a narrow screen */
+  .futa-reg .plans { grid-template-columns: 1fr; }
+  .futa-reg .plan { min-height: auto; }
+  .futa-reg .reg-badge { top: -8px; }
+}
+
+/* older browsers that don't support :has get a plain outline instead */
+@supports not (selector(:has(*))) {
+  .futa-reg .choice input { position: static; opacity: 1; width: 20px; height: 20px; }
+  .futa-reg .choice { flex-direction: row; gap: 9.25px; }
+  /* no :has here, so the radio itself has to carry the selected state */
+  .futa-reg .choice input:checked { accent-color: var(--green); }
+}
+
+/* the office keeps a paper copy, so make it print sensibly */
+@media print {
+  .futa-reg .langbar, .futa-reg .helpline, .futa-reg .actions, .futa-reg .remove-btn, .futa-reg .counter-row, .futa-reg .foot { display: none; }
+  .futa-reg { background: #fff; font-size: 11pt; }
+  .futa-reg .page { max-width: none; padding: 0; }
+  .futa-reg .reg-card { border: 1px solid #999; border-radius: 0; margin-bottom: 11.1px; page-break-inside: avoid; }
+  .futa-reg .masthead { border-top-width: 2px; }
+  .futa-reg .full-rules, .futa-reg .rules-short { display: none; }
+  .futa-reg .rules-long { max-height: none; overflow: visible; }
+  .futa-reg .choice { min-height: 0; padding: 5.55px; }
+  .futa-reg .conditional[hidden] { display: none !important; }
+}
+
+/* fieldset is the right element for a group of radios, but its default
+   border, padding and legend positioning all have to be undone */
+.futa-reg fieldset.field, .futa-reg fieldset.plan-set {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.futa-reg fieldset.field > legend, .futa-reg fieldset.plan-set > legend {
+  float: left;          /* legends ignore display:block in some engines */
+  width: 100%;
+  padding: 0;
+  margin-bottom: 5.55px;
+  font-size: 19.43px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.futa-reg fieldset.field > legend + *, .futa-reg fieldset.plan-set > legend + * { clear: both; }
+.futa-reg fieldset.plan-set > legend { font-weight: 400; }
+
+/* keyboard users land here first and can jump the rules */
+.futa-reg .skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 20;
+  padding: 12.95px 20.35px;
+  background: var(--green-dark);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0 0 6px 0;
+}
+.futa-reg .skip:focus { left: 0; }
+
+/* visible focus ring - the browser default disappears on custom controls */
+.futa-reg :focus-visible {
+  outline: 3px solid var(--green-dark);
+  outline-offset: 2px;
+}
+
+/* spam trap, off-screen rather than display:none so bots still fill it */
+.futa-reg .hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* tuition: the rate stated in words, before any arithmetic */
+.futa-reg .tuition-headline {
+  margin: 0 0 18.5px;
+  padding: 16.65px 18.5px;
+  background: var(--green-pale);
+  border-left: 4px solid var(--green);
+  border-radius: 6px;
+  line-height: 1.45;
+}
+.futa-reg .tuition-headline #tuitionWho {
+  display: block;
+  font-size: 17.57px;
+  color: var(--muted);
+}
+.futa-reg .tuition-headline strong {
+  display: block;
+  font-size: 29.6px;
+  color: var(--green-dark);
+}
+.futa-reg .tuition-forall { font-size: 17.57px; color: var(--muted); }
+
+/* the school's rate card, with the family's own row marked */
+.futa-reg .rates { width: 100%; border-collapse: collapse; margin-bottom: 20.35px; }
+.futa-reg .rates caption, .futa-reg .fees caption {
+  text-align: left;
+  padding-bottom: 7.4px;
+  font-size: 16.65px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.futa-reg .rates td {
+  padding: 6.47px 10.18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.futa-reg .rates tr:last-child td { border-bottom: none; }
+.futa-reg .rates tr.on td {
+  color: var(--green-dark);
+  font-weight: 700;
+  background: var(--green-pale);
+}
+.futa-reg .rates tr.on td:first-child::before { content: "\2713  "; color: var(--green); }
+
+.futa-reg .after-today {
+  margin: 0 0 18.5px;
+  padding: 12.95px 15.72px;
+  background: #fff8e1;
+  border-left: 4px solid var(--gold);
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* year, stated once and clearly, since only one is open */
+.futa-reg .year-line {
+  margin: 9.25px 0 0;
+  font-size: 19.43px;
+  color: var(--green-dark);
+  letter-spacing: .01em;
+}
+.futa-reg .year-line strong { font-size: 22.2px; }
+
+/* jump bar: says where you are on a long form, and gets you elsewhere */
+.futa-reg .stepnav {
+  position: sticky;
+  top: 48px;
+  z-index: 8;
+  display: flex;
+  gap: 5.55px;
+  overflow-x: auto;
+  padding: 8.33px 3.7px;
+  margin-bottom: 14.8px;
+  background: rgba(245, 248, 246, .96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.futa-reg .stepnav::-webkit-scrollbar { display: none; }
+.futa-reg .stepnav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7.4px;
+  flex: 0 0 auto;
+  padding: 5.55px 11.1px 5.55px 5.55px;
+  font-size: 15.72px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.futa-reg .stepnav-num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 14.8px;
+  color: #fff;
+  background: var(--muted);
+  border-radius: 50%;
+}
+.futa-reg .stepnav-item.on {
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-color: var(--green);
+}
+.futa-reg .stepnav-item.on .stepnav-num { background: var(--green-mid); }
+
+@media (max-width: 620px) {
+  .futa-reg .stepnav { top: 44px; }
+  /* on a phone the labels cost more than they give */
+  .futa-reg .stepnav-item { font-size: 0; padding: 4.62px; gap: 0; }
+  .futa-reg .stepnav-num { font-size: 15.72px; width: 28px; height: 28px; }
+}
+
+@media print { .futa-reg .stepnav { display: none; } }
+
+/* Dropped into an existing page, the host's own rules still reach these
+   elements - scoping stops our CSS leaking out, not theirs leaking in.
+   ficny.org sets display:flex on section, which collapsed the agreement
+   checkboxes to the width of their tick box. So declare the layout these
+   pieces depend on instead of inheriting whatever the page happens to set. */
+.futa-reg .futa-reg .reg-card, .futa-reg .reg-card { display: block; }
+
+.futa-reg .futa-reg .reg-check, .futa-reg .reg-check { width: 100%; align-self: stretch; }
+
+.futa-reg .futa-reg .student-head, .futa-reg .student-head { width: 100%; }
+
+/* a jump target still has to be comfortable to hit */
+.futa-reg .stepnav-item { min-height: 44px; }
+
+/* Yes/No pairs do not need the full width of a row - a narrower pair reads
+   faster and stops two words sprawling across 800px. */
+/* long-label groups still should not run the full width of a card */
+.futa-reg .choices { max-width: 851px; }
+.futa-reg .choices.plans { max-width: none; }
+
+/* the answer buttons carry a smaller label than the question above them */
+.futa-reg .choice { line-height: 1.3; }
+
+/* On a tall child card the heading scrolls away and you lose track of whose
+   details you are filling in. Keep it in view, below the language bar and the
+   jump bar that are already stuck to the top. */
+.futa-reg .student-head {
+  position: sticky;
+  top: 92px;
+  z-index: 6;
+  background: var(--card);
+  margin-left: -19.43px;
+  margin-right: -19.43px;
+  padding-left: 19.43px;
+  padding-right: 19.43px;
+}
+
+@media (max-width: 620px) {
+  .futa-reg .student-head { top: 80px; }
+}
+
+@media print {
+  .futa-reg .student-head { position: static; }
+}

@@ -123,22 +123,22 @@ body {
 .helpline a { color: var(--green-dark); font-weight: 700; white-space: nowrap; }
 
 /* cards */
-.card {
+.reg-card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.15rem 1.25rem;
-  margin-bottom: .85rem;
+  padding: .95rem 1.05rem;
+  margin-bottom: .7rem;
 }
-.card h2 {
+.reg-card h2 {
   display: flex;
   align-items: center;
   gap: .6rem;
   flex-wrap: wrap;
-  margin: 0 0 .9rem;
-  font-size: 1.2rem;
+  margin: 0 0 .7rem;
+  font-size: 1.15rem;
   color: var(--green-dark);
-  padding-bottom: .6rem;
+  padding-bottom: .45rem;
   border-bottom: 2px solid var(--green-pale);
 }
 .step {
@@ -152,13 +152,13 @@ body {
   background: var(--green-mid);
   border-radius: 4px;
 }
-.lead {
+.reg-lead {
   max-width: 60ch;
   margin: -.5rem 0 .85rem;
   color: var(--muted);
   font-size: 1rem;
 }
-.lead.private { margin: .5rem 0 0; font-size: .95rem; font-style: italic; }
+.reg-lead.private { margin: .5rem 0 0; font-size: .95rem; font-style: italic; }
 .optional {
   font-size: .88rem;
   font-weight: 600;
@@ -175,7 +175,7 @@ body {
   gap: 1rem;
   align-items: flex-start;
   max-width: 62ch;
-  padding: .6rem 0;
+  padding: .45rem 0;
   border-bottom: 1px solid var(--green-pale);
 }
 .rules-short li:last-child { border-bottom: none; }
@@ -184,8 +184,8 @@ body {
 /* line icons, drawn with currentColor so they follow the text */
 .ico, .kid-ico {
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 19px;
+  height: 19px;
   fill: none;
   stroke: var(--green-mid);
   stroke-width: 1.6;
@@ -210,7 +210,7 @@ body {
 
 .full-rules[open] summary { border-radius: 8px 8px 0 0; }
 .rules-long {
-  max-height: 400px;
+  max-height: 320px;
   overflow-y: auto;
   padding: 1rem 1.15rem;
   font-size: 1rem;
@@ -232,10 +232,12 @@ body {
 }
 
 /* form fields */
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem .85rem; }
 .span-2 { grid-column: 1 / -1; }
 .field { display: flex; flex-direction: column; }
-.field label {
+/* direct child only: the answer buttons are labels nested inside .choices,
+   and a descendant selector here outranks .choice and resizes them too */
+.field > label {
   max-width: 60ch;
   margin-bottom: .3rem;
   font-size: 1.05rem;
@@ -268,31 +270,42 @@ textarea { resize: vertical; }
 .error:empty { display: none; }
 
 /* big tap targets instead of dropdowns */
-.choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+/* Answers size to their own words. A two-column grid gave "Yes" the same
+   width as "A parent comes to get them", which looked like a mistake. */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+}
 .choices.two { grid-template-columns: repeat(2, 1fr); }
 .choices.three { grid-template-columns: repeat(3, 1fr); }
 .choices.invalid .choice { border-color: var(--danger); }
 
 .choice {
+  flex: 0 1 auto;
+  min-width: 3.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: .15rem;
-  min-height: 54px;
-  padding: .55rem .6rem;
+  gap: .1rem;
+  min-height: 34px;
+  padding: .2rem .7rem;
+  font-size: .82rem;
   text-align: center;
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--muted);
   background: #fff;
   border: 2px solid var(--line);
   border-radius: 10px;
   cursor: pointer;
 }
 .choice input { position: absolute; opacity: 0; pointer-events: none; }
-.choice small { font-weight: 400; font-size: .92rem; color: var(--muted); }
+.choice small { font-weight: 400; font-size: .72rem; color: var(--muted); }
 .choice:hover { border-color: var(--green); }
 .choice:has(input:checked) {
   color: var(--green-dark);
+  font-weight: 700;
   background: var(--green-pale);
   border-color: var(--green);
   box-shadow: inset 0 0 0 1px var(--green);
@@ -300,19 +313,19 @@ textarea { resize: vertical; }
 .choice:has(input:checked)::after {
   content: "✓";
   position: absolute;
-  transform: translate(calc(50% + 1.5rem), -1.6rem);
+  transform: translate(calc(50% + 1.1rem), -1.15rem);
   color: var(--green);
   font-weight: 700;
 }
 
 /* payment plans */
-.plans { grid-template-columns: repeat(2, 1fr); margin-bottom: 1.25rem; }
-.plan { position: relative; min-height: 150px; gap: .3rem; padding: 1.25rem .8rem; }
-.plan-name { font-size: 1rem; }
-.plan-big { font-size: 2.1rem; font-weight: 700; color: var(--green-dark); }
+.plans { display: grid; grid-template-columns: repeat(2, 1fr); margin-bottom: 1.25rem; }
+.plan { position: relative; min-height: 0; gap: .15rem; padding: .7rem .6rem; }
+.plan-name { font-size: .9rem; }
+.plan-big { font-size: 1.5rem; font-weight: 700; color: var(--green-dark); }
 .plan-note, .plan-after { font-weight: 400; }
 .plan-after { color: var(--muted); }
-.badge {
+.reg-badge {
   position: absolute;
   top: -10px;
   right: 10px;
@@ -325,19 +338,19 @@ textarea { resize: vertical; }
 }
 
 /* checkboxes */
-.checkbox {
+.reg-check {
   display: flex;
   align-items: flex-start;
-  gap: .75rem;
-  padding: .6rem .7rem;
-  margin-bottom: .4rem;
+  gap: .6rem;
+  padding: .4rem .5rem;
+  margin-bottom: .25rem;
   border: 2px solid var(--line);
   border-radius: 10px;
   cursor: pointer;
 }
-.checkbox:has(input:checked) { background: var(--green-pale); border-color: var(--green); }
-.checkbox input { width: 26px; height: 26px; flex-shrink: 0; accent-color: var(--green); }
-.checkbox.big { font-size: 1.05rem; line-height: 1.45; }
+.reg-check:has(input:checked) { background: var(--green-pale); border-color: var(--green); }
+.reg-check input { width: 22px; height: 22px; flex-shrink: 0; accent-color: var(--green); }
+.reg-check.big { font-size: .95rem; line-height: 1.4; }
 .soft { border: none; border-top: 1px solid var(--line); margin: 1.5rem 0 1rem; }
 
 /* counter */
@@ -370,8 +383,8 @@ textarea { resize: vertical; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: .9rem;
-  padding-bottom: .6rem;
+  margin-bottom: .7rem;
+  padding-bottom: .45rem;
   border-bottom: 2px solid var(--green-pale);
 }
 .student-head h2 { margin: 0; padding: 0; border: none; }
@@ -390,7 +403,7 @@ textarea { resize: vertical; }
 .remove-btn:hover { background: #fdecea; border-color: var(--danger); }
 
 .conditional {
-  padding: .75rem;
+  padding: .6rem;
   background: #fbfdfc;
   border: 2px dashed var(--line);
   border-radius: 10px;
@@ -399,7 +412,7 @@ textarea { resize: vertical; }
 /* fee table */
 .tuition { border-left: 5px solid var(--gold); }
 .fees { width: 100%; border-collapse: collapse; margin-bottom: .9rem; }
-.fees td { padding: .55rem .25rem; border-bottom: 1px solid var(--line); }
+.fees td { padding: .45rem .25rem; border-bottom: 1px solid var(--line); }
 .fees .amt { text-align: right; font-weight: 700; white-space: nowrap; }
 .fees .total td {
   border-bottom: none;
@@ -462,19 +475,21 @@ textarea { resize: vertical; }
 @media (max-width: 620px) {
   html { font-size: 17.5px; }
   .page { padding: .75rem .75rem 3rem; }
-  .card { padding: 1.15rem; }
+  .reg-card { padding: 1.15rem; }
   .grid { grid-template-columns: 1fr; }
   .masthead h1 { font-size: 1.6rem; }
-  .choices.three { grid-template-columns: 1fr; }
+  .choice { flex: 1 1 auto; }      /* fill the row on a narrow screen */
   .plans { grid-template-columns: 1fr; }
   .plan { min-height: auto; }
-  .badge { top: -8px; }
+  .reg-badge { top: -8px; }
 }
 
 /* older browsers that don't support :has get a plain outline instead */
 @supports not (selector(:has(*))) {
   .choice input { position: static; opacity: 1; width: 20px; height: 20px; }
   .choice { flex-direction: row; gap: .5rem; }
+  /* no :has here, so the radio itself has to carry the selected state */
+  .choice input:checked { accent-color: var(--green); }
 }
 
 /* the office keeps a paper copy, so make it print sensibly */
@@ -482,7 +497,7 @@ textarea { resize: vertical; }
   .langbar, .helpline, .actions, .remove-btn, .counter-row, .foot { display: none; }
   body { background: #fff; font-size: 11pt; }
   .page { max-width: none; padding: 0; }
-  .card { border: 1px solid #999; border-radius: 0; margin-bottom: .6rem; page-break-inside: avoid; }
+  .reg-card { border: 1px solid #999; border-radius: 0; margin-bottom: .6rem; page-break-inside: avoid; }
   .masthead { border-top-width: 2px; }
   .full-rules, .rules-short { display: none; }
   .rules-long { max-height: none; overflow: visible; }
@@ -537,4 +552,172 @@ fieldset.plan-set > legend { font-weight: 400; }
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+/* tuition: the rate stated in words, before any arithmetic */
+.tuition-headline {
+  margin: 0 0 1rem;
+  padding: .9rem 1rem;
+  background: var(--green-pale);
+  border-left: 4px solid var(--green);
+  border-radius: 6px;
+  line-height: 1.45;
+}
+.tuition-headline #tuitionWho {
+  display: block;
+  font-size: .95rem;
+  color: var(--muted);
+}
+.tuition-headline strong {
+  display: block;
+  font-size: 1.6rem;
+  color: var(--green-dark);
+}
+.tuition-forall { font-size: .95rem; color: var(--muted); }
+
+/* the school's rate card, with the family's own row marked */
+.rates { width: 100%; border-collapse: collapse; margin-bottom: 1.1rem; }
+.rates caption,
+.fees caption {
+  text-align: left;
+  padding-bottom: .4rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.rates td {
+  padding: .35rem .55rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.rates tr:last-child td { border-bottom: none; }
+.rates tr.on td {
+  color: var(--green-dark);
+  font-weight: 700;
+  background: var(--green-pale);
+}
+.rates tr.on td:first-child::before { content: "\2713  "; color: var(--green); }
+
+.after-today {
+  margin: 0 0 1rem;
+  padding: .7rem .85rem;
+  background: #fff8e1;
+  border-left: 4px solid var(--gold);
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* year, stated once and clearly, since only one is open */
+.year-line {
+  margin: .5rem 0 0;
+  font-size: 1.05rem;
+  color: var(--green-dark);
+  letter-spacing: .01em;
+}
+.year-line strong { font-size: 1.2rem; }
+
+/* jump bar: says where you are on a long form, and gets you elsewhere */
+.stepnav {
+  position: sticky;
+  top: 48px;
+  z-index: 8;
+  display: flex;
+  gap: .3rem;
+  overflow-x: auto;
+  padding: .45rem .2rem;
+  margin-bottom: .8rem;
+  background: rgba(245, 248, 246, .96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.stepnav::-webkit-scrollbar { display: none; }
+.stepnav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  flex: 0 0 auto;
+  padding: .3rem .6rem .3rem .3rem;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.stepnav-num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: .8rem;
+  color: #fff;
+  background: var(--muted);
+  border-radius: 50%;
+}
+.stepnav-item.on {
+  color: var(--green-dark);
+  background: var(--green-pale);
+  border-color: var(--green);
+}
+.stepnav-item.on .stepnav-num { background: var(--green-mid); }
+
+@media (max-width: 620px) {
+  .stepnav { top: 44px; }
+  /* on a phone the labels cost more than they give */
+  .stepnav-item { font-size: 0; padding: .25rem; gap: 0; }
+  .stepnav-num { font-size: .85rem; width: 28px; height: 28px; }
+}
+
+@media print { .stepnav { display: none; } }
+
+/* Dropped into an existing page, the host's own rules still reach these
+   elements - scoping stops our CSS leaking out, not theirs leaking in.
+   ficny.org sets display:flex on section, which collapsed the agreement
+   checkboxes to the width of their tick box. So declare the layout these
+   pieces depend on instead of inheriting whatever the page happens to set. */
+.futa-reg .reg-card,
+.reg-card { display: block; }
+
+.futa-reg .reg-check,
+.reg-check { width: 100%; align-self: stretch; }
+
+.futa-reg .student-head,
+.student-head { width: 100%; }
+
+/* a jump target still has to be comfortable to hit */
+.stepnav-item { min-height: 44px; }
+
+/* Yes/No pairs do not need the full width of a row - a narrower pair reads
+   faster and stops two words sprawling across 800px. */
+/* long-label groups still should not run the full width of a card */
+.choices { max-width: 46rem; }
+.choices.plans { max-width: none; }
+
+/* the answer buttons carry a smaller label than the question above them */
+.choice { line-height: 1.3; }
+
+/* On a tall child card the heading scrolls away and you lose track of whose
+   details you are filling in. Keep it in view, below the language bar and the
+   jump bar that are already stuck to the top. */
+.student-head {
+  position: sticky;
+  top: 92px;
+  z-index: 6;
+  background: var(--card);
+  margin-left: -1.05rem;
+  margin-right: -1.05rem;
+  padding-left: 1.05rem;
+  padding-right: 1.05rem;
+}
+
+@media (max-width: 620px) {
+  .student-head { top: 80px; }
+}
+
+@media print {
+  .student-head { position: static; }
 }
