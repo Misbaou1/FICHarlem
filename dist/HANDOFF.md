@@ -24,7 +24,7 @@ set of fields for each one. The sheet gets one row per child.
 ## What is in the package
 
     index.html      the form
-    styles.css      styling (uses #40aa49, the green already on the site)
+    styles.css      styling (school green #1f5a3a, with #40aa49 from the site for ticks)
     text.js         all the English and French wording
     app.js          the logic
     img/logo.png    the FUTA logo used in the form header
@@ -86,6 +86,11 @@ Fix the four paths in `registration.html` to match:
     <script src="registration/app.js"></script>
 
 Anything in `public/` is served as-is and untouched by the build.
+
+**Fonts.** The form uses Source Serif 4, Source Sans 3 and Amiri from Google
+Fonts. Option A gets them from the `<link>` tags already in `index.html`. For
+Option B, add the same three `<link>` lines to the page `<head>`; without them
+the form still works and falls back to the site's own Lato.
 
 Then point `/volunteer-form` at it - either replace that route's content or
 redirect it. Keep the old URL working: it is the one already shared with
