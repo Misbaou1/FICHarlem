@@ -1,43 +1,74 @@
-# Replacing the volunteer-form Google Form on ficny.org
+# FUTA Islamic School registration form
 
-For whoever maintains the website.
+For whoever maintains ficny.org.
 
-## What changes
+This replaces the "Open Google Form" link on **`/volunteer-form`** with a
+registration form that runs on the site. Nothing else on ficny.org changes.
 
-Exactly one page: **`/volunteer-form`**.
+The form is plain HTML, CSS and JavaScript. No build step, no framework, no
+dependencies. It is about 2,000 lines in four files.
 
-Today that page shows a committee table and a button reading "Open Google Form".
-That button opens the FUTA Islamic School **student registration** Google Form
-(form id `1FAIpQLSefLICxc_XXQ6...`) - not a volunteer form. The page is being
-turned into the registration page it already links to, with the Google Form
-replaced by an HTML form on the site.
 
-Nothing else on ficny.org changes. Every other page in the `ficny-local` folder
-that came with this is byte-for-byte identical to the live site.
+## Why the form exists
 
-## Two things worth raising separately
+The Google Form that link opens asks for the first child properly, then asks
+for every other child in free-text boxes ("Date of Birth - Please enter the
+date of Birth for each"). Google Forms cannot repeat a group of questions, so
+all the siblings end up in one spreadsheet cell and the school cannot sort by
+class level or count how many beginners it has.
 
-1. The committee text on that page describes **"FIC 12 South"** and a role for
-   "Muslims who recently moved to **Nashville** Area". It was copied from
-   another Islamic center and never rewritten. It is being removed along with
-   the Google Form button, so this resolves itself - but if a genuine volunteer
-   page is wanted later, that copy needs writing from scratch.
-2. That page currently renders with **no header, no menu and no footer**, unlike
-   every other page on the site. Visitors who land on it have no way back. Worth
-   fixing whichever direction the page goes.
+Here the parent says how many children they are registering and gets a complete
+set of fields for each one. The sheet gets one row per child.
 
-## The files
 
-    index.html     the form
-    styles.css     styling (uses #40aa49, the green already on the site)
-    text.js        English and French wording
-    app.js         the logic
-    img/logo.png   the FUTA logo used in the form header
+## What is in the package
 
-`Code.gs` is not part of the website. It lives in Google Apps Script and
-receives the submissions.
+    index.html      the form
+    styles.css      styling (school green #1f5a3a, with #40aa49 from the site for ticks)
+    text.js         all the English and French wording
+    app.js          the logic
+    img/logo.png    the FUTA logo used in the form header
 
-## Option A - static page (simplest)
+    embed/          the same form, scoped for dropping into an existing page
+    Code.gs         Google Apps Script - receives submissions, NOT part of the site
+    README.md       setup and testing notes for the masjid office
+
+`Code.gs` lives in Apps Script attached to a Google Sheet. It never goes on the
+web server.
+
+
+## Four things that will cost you time if you do not know them
+
+**1. The form must go in the route source. It cannot be injected.**
+I tried. ficny.org is a built Next.js export, and hydration rebuilds the DOM
+from React's own tree, deleting anything it did not render - markup, `<script>`
+tags and stylesheet `<link>`s alike. Anything added from outside disappears a
+moment after load. The local preview in `ficny-local/` works only because the
+Next.js runtime is stripped out of that one page.
+
+**2. The class names are prefixed on purpose. Do not rename them back.**
+The site loads Bootstrap. Four of the form's original class names collided with
+it, and one was destructive: Bootstrap-era CSS on the site sets
+`.checkbox { opacity: 0; width: 0; height: 0 }` for a toggle-switch widget,
+which made the agreement checkboxes render at 26x23px and effectively invisible.
+They are now `reg-card`, `reg-lead`, `reg-badge` and `reg-check`.
+
+Scoping selectors under a wrapper stops the form's CSS leaking out. It does not
+stop the host page's CSS leaking in - only different class names do that.
+
+**3. The fetch sends a plain string on purpose.**
+Setting an `application/json` content-type makes the browser send a CORS
+preflight, and Apps Script cannot answer `OPTIONS`. It will look like a missing
+header. It is not. Leave it alone.
+
+**4. Ids for the per-child fields are generated at clone time.**
+See `wireLabels()` in app.js. The `<template>` cannot carry ids because every
+child clones the same markup and ids must be unique. That function also joins
+each label to its control and each error message to the field it describes,
+so removing it leaves screen readers announcing the inputs as unnamed.
+
+
+## Option A - static page (least work)
 
 Put the files in the Next.js `public/` folder:
 
@@ -47,97 +78,94 @@ Put the files in the Next.js `public/` folder:
     public/registration/app.js
     public/registration/img/logo.png
 
-Then fix the four paths in `registration.html`:
+Fix the four paths in `registration.html` to match:
 
     <link rel="stylesheet" href="registration/styles.css">
     <img class="logo" src="registration/img/logo.png" ...>
     <script src="registration/text.js"></script>
     <script src="registration/app.js"></script>
 
-Anything in `public/` is served as-is and is not touched by the build.
+Anything in `public/` is served as-is and untouched by the build.
 
-Then point `/volunteer-form` at it - either replace that route's content with
-the form, or redirect the route to `/registration.html`. Keep the old URL
-working either way: it is the one already shared with families.
+**Fonts.** The form uses Source Serif 4, Source Sans 3 and Amiri from Google
+Fonts. Option A gets them from the `<link>` tags already in `index.html`. For
+Option B, add the same three `<link>` lines to the page `<head>`; without them
+the form still works and falls back to the site's own Lato.
 
-A suggestion, not a requirement: `/registration` reads better than
-`/volunteer-form` for a page that registers children. Adding the clearer URL
-and redirecting the old one to it costs nothing and stops the confusion
-recurring.
-
-The `ficny-local` folder that came with this shows the finished result - open
-`volunteer-form.html` in it and the form is there.
+Then point `/volunteer-form` at it - either replace that route's content or
+redirect it. Keep the old URL working: it is the one already shared with
+families, and the "Volunteer Sign Up" button on `/get-involved` routes there.
 
 
-## Option B - a real Next.js route
+## Option B - inside the page, keeping the site chrome
 
-If you would rather it be a proper page with the site header and footer around
-it, the form is a single self-contained chunk of markup and one script. Roughly:
+Use `embed/registration.html` and `embed/registration.css`. Every selector in
+that CSS is scoped under `.futa-reg`, and `rem` units are converted to `px`
+because `rem` resolves against `<html>`, which an embedded component must not
+touch.
 
-1. `app/registration/page.tsx` with the markup from `index.html` (everything
-   inside `<main class="page">`, plus the `<template>` and the language bar).
-   `class` becomes `className`, and `<input>` tags need to be self-closing.
-2. Drop `styles.css` in as a CSS module or a global stylesheet.
-3. `text.js` and `app.js` load in a `useEffect`, or get rewritten as React
-   state. The form deliberately uses no framework, so Option A is less work and
-   there is nothing to gain from converting it unless you want the site chrome.
+Paste the markup where the Google Form link is, load the CSS, then load
+`text.js` and `app.js` **after** the markup exists - app.js binds to the DOM as
+it runs.
 
-If you do convert it, the one thing to keep is how the child cards are added:
-they are cloned and appended one at a time rather than the list being rebuilt,
-so that a parent who changes the number of children does not lose what they
-already typed.
+Regenerate the embed after editing the source:
+
+    python3 build-embed.py
+
+It refuses to emit CSS containing an unscoped selector or a leftover `rem`, so
+a mistake fails the build rather than leaking into the page.
+
+Option A is less work and there is nothing to gain from a full React rewrite.
+If you do convert it, keep how the child cards are added: they are cloned and
+appended one at a time rather than the list being rebuilt, so a parent who
+changes the number of children does not lose what they already typed.
 
 
 ## Before it goes live
 
-`app.js` line 6 must have the Google Apps Script URL:
+`app.js` line 13 needs the Google Apps Script URL:
 
-    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfyc..../exec';
+    var ENDPOINT = 'https://script.google.com/macros/s/AKfyc..../exec';
 
-While it is empty the form runs in test mode and does not send anything. Ask the
-masjid office for the URL, or see step "Connect the Google Sheet" in README.md.
+While it is empty the form runs in test mode: it validates and shows the
+confirmation, but logs the answers to the console instead of sending them. The
+masjid office has the URL, or README.md has the steps to create it.
 
-The form posts JSON as a plain string on purpose. Setting an
-`application/json` content-type would make the browser send a CORS preflight,
-and Apps Script cannot answer `OPTIONS`. Please do not "fix" that by adding
-headers to the fetch call.
+
+## What else is in there
+
+- **English / French toggle**, remembered between visits. All wording is in
+  `text.js` - nothing to hunt for in the HTML.
+- **Fees calculated from the 2026-2027 rules**: $50 registration per child;
+  tuition $60 / $100 / $120 for one, two or three children, then $40 each;
+  monthly plan is registration plus three months up front, then nine payments;
+  full-year plan takes 5% off tuition. All 21 figures were checked against the
+  two tables in the rules PDF.
+- **Drafts saved to localStorage** as the parent types, restored next visit. The
+  rules checkbox, the four agreement boxes and the signature are deliberately
+  never restored - agreeing and signing should be deliberate each time.
+- **A honeypot field** (`#website`), off-screen rather than `display:none` so
+  bots still fill it. A submission with it filled is dropped silently.
+- **A 20-second submit timeout** via `AbortController`, and a guard so a double
+  tap cannot send twice.
+- **Accessibility**: radio groups are `<fieldset>`/`<legend>`, errors are wired
+  with `aria-describedby` and `aria-invalid`, and there is a skip link.
+- **A print stylesheet**, for the office's paper copy.
 
 
 ## Browser support
 
-Works in current Chrome, Safari, Firefox and Edge, on phones and desktop.
-The selected-button highlight uses the CSS `:has()` selector; browsers older
-than about 2023 fall back to plain radio buttons, which still work.
+Current Chrome, Safari, Firefox and Edge, on phones and desktop. The
+selected-answer highlight uses the CSS `:has()` selector; browsers older than
+roughly 2023 fall back to plain radio buttons, which still work.
 
-## Notes on the code
 
-A few things are deliberate and worth not undoing:
+## Two questions for the masjid, not for you
 
-**The form posts a plain string, not JSON with a content-type.** Declaring
-`application/json` makes the browser send a CORS preflight, and Apps Script
-cannot answer `OPTIONS`. It will look like an unset header; it is not.
+Flagging these so nobody assumes they are bugs:
 
-**Radio groups are `<fieldset>` + `<legend>`, not `<label>` + `<div>`.** A
-`<label>` may name exactly one control, so using one for a group is invalid and
-leaves screen readers announcing the inputs as unnamed.
-
-**Ids on the per-child fields are generated at clone time**, in `wireLabels()`.
-The `<template>` cannot carry them because ids must be unique, and every child
-gets a copy of the same markup. That function is also what joins each label to
-its control and each error message to the field it describes.
-
-**Everything is inside one IIFE** and nothing is attached to `window` except
-`TEXT`, which is passed in explicitly so the single dependency is visible.
-
-**Drafts are saved to localStorage as the parent types** and restored on the
-next visit, because a family with four children has a long form to lose. The
-rules checkbox, the four agreement boxes and the signature are deliberately
-never restored: agreeing and signing should be deliberate acts each time, not
-something a saved draft ticks on the parent's behalf.
-
-**There is a hidden honeypot field** (`#website`). It is positioned off-screen
-rather than `display:none` so that bots still fill it; a submission that has it
-filled is dropped silently.
-
-**The submit has a 20-second timeout** via `AbortController`, and a re-entry
-guard so a double tap cannot send twice.
+1. **Registration is $50 per student.** The old Google Form says per family.
+   The 2026-2027 rules PDF says per student and its tables confirm it - $100 for
+   two children, $150 for three. The form follows the PDF.
+2. **The $20 late-pickup fee is gone.** It is in the old Google Form's agreement
+   checkbox but appears nowhere in the new rules PDF, so it was removed.

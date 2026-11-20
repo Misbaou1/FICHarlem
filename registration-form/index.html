@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FUTA Islamic School - Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -37,8 +40,11 @@
     <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
     <h1>FUTA Islamic School</h1>
     <p class="subtitle" data-t="subtitle">Register your child for school</p>
-    <p class="addr">2026 - 2027 · FUTA Islamic Harlem · 32 W 123rd St, New York, NY 10027</p>
+    <p class="year-line"><strong>2026 &ndash; 2027</strong> <span data-t="schoolYearLabel">school year</span></p>
+    <p class="addr">FUTA Islamic Harlem · 32 W 123rd St, New York, NY 10027</p>
   </header>
+
+  <nav class="stepnav" id="stepNav" aria-label="Form sections"></nav>
 
   <p class="intro" data-t="intro">Fill in the boxes below. A red star * means you must answer.</p>
 
@@ -50,9 +56,9 @@
   <form id="registrationForm" novalidate>
 
     <!-- step 1: rules, short version first and the full text behind the button -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">1</span><span data-t="s1Title">School rules</span></h2>
-      <p class="lead" data-t="s1Lead">Please read these before you sign.</p>
+      <p class="reg-lead" data-t="s1Lead">Please read these before you sign.</p>
 
       <ul class="rules-short">
         <li><svg class="ico"><use href="#ic-clock"></use></svg><span data-t="r1">Winter: 9:45 AM to 1:30 PM. Summer: 9:45 AM to 12:30 PM. After 10:00 AM your child cannot enter class without a good reason.</span></li>
@@ -125,7 +131,7 @@
         </div>
       </details>
 
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" id="rulesAck" required>
         <span data-t="rulesAck">I have read the rules and I agree. <span class="req">*</span></span>
       </label>
@@ -133,9 +139,9 @@
     </section>
 
     <!-- step 2 -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">2</span><span data-t="s2Title">How many children?</span></h2>
-      <p class="lead" data-t="s2Lead">Press + to add a child. You will fill in one card for each child.</p>
+      <p class="reg-lead" data-t="s2Lead">Press + to add a child. You will fill in one card for each child.</p>
 
       <div class="counter-row">
         <button type="button" class="counter-btn" id="decBtn" aria-label="One child less">−</button>
@@ -147,10 +153,27 @@
     <div id="studentsContainer"></div>
 
     <!-- step 3: money -->
-    <section class="card tuition">
+    <section class="reg-card tuition">
       <h2><span class="step">3</span><span data-t="s3Title">What you pay</span></h2>
+
+      <!-- The rate is for the whole family, not per child. Parents read it the
+           other way round and expect to multiply, so say it plainly first. -->
+      <p class="tuition-headline">
+        <span id="tuitionWho">1 child</span>
+        <strong id="tuitionRate">$60 a month</strong>
+        <span class="tuition-forall" data-t="forWholeFamily">for all your children together</span>
+      </p>
+
+      <table class="rates" id="rateTable">
+        <caption data-t="rateTitle">The school&rsquo;s monthly rates</caption>
+        <tr data-rate="1"><td data-t="rate1">1 child</td><td class="amt">$60</td></tr>
+        <tr data-rate="2"><td data-t="rate2">2 children</td><td class="amt">$100</td></tr>
+        <tr data-rate="3"><td data-t="rate3">3 children</td><td class="amt">$120</td></tr>
+        <tr data-rate="4"><td data-t="rateExtra">every child after the third</td><td class="amt">+$40</td></tr>
+      </table>
+
       <fieldset class="plan-set">
-      <legend class="lead" data-t="s3Lead">Choose how you want to pay. <span class="req">*</span></legend>
+      <legend class="reg-lead" data-t="s3Lead">Choose how you want to pay. <span class="req">*</span></legend>
 
       <div class="choices plans" data-required data-name="plan">
         <label class="choice plan">
@@ -164,7 +187,7 @@
         <label class="choice plan">
           <input type="radio" name="plan" value="Full year">
           <span class="plan-name" data-t="planYear">Pay the whole year</span>
-          <span class="badge" data-t="save5">save 5%</span>
+          <span class="reg-badge" data-t="save5">save 5%</span>
           <span class="plan-big" id="planYearDue">$734</span>
           <small class="plan-note" data-t="planYearNote">to pay today</small>
           <small class="plan-after" data-t="planYearAfter">Nothing more to pay this year</small>
@@ -174,6 +197,7 @@
       </fieldset>
 
       <table class="fees">
+        <caption data-t="todayTitle">What you pay today</caption>
         <tr>
           <td><span data-t="feeReg">Registration</span> <span class="fees-detail" id="regBasis"></span></td>
           <td class="amt" id="regFee">$50</td>
@@ -188,11 +212,13 @@
         </tr>
       </table>
 
-      <p class="lead pay-note" data-t="payNote">After today, each monthly payment is due on the 1st. If you have not paid by the 5th, your child cannot come to class until the account is paid. Money already paid is not refunded.</p>
+      <p class="after-today" id="afterToday"></p>
+
+      <p class="reg-lead pay-note" data-t="payNote">After today, each monthly payment is due on the 1st. If you have not paid by the 5th, your child cannot come to class until the account is paid. Money already paid is not refunded.</p>
     </section>
 
     <!-- step 4: parent 1 -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">4</span><span data-t="s4Title">About you (parent 1)</span></h2>
       <div class="grid">
         <div class="field span-2">
@@ -233,13 +259,13 @@
     </section>
 
     <!-- step 5: parent 2, optional -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">5</span><span data-t="s5Title">Second parent</span><span class="optional" data-t="ifAny">if there is one</span></h2>
-      <p class="lead" data-t="s5Lead">You can leave this empty.</p>
+      <p class="reg-lead" data-t="s5Lead">You can leave this empty.</p>
       <div class="grid">
         <div class="field span-2">
           <label for="g2Name" data-t="fullName">Full name</label>
-          <input type="text" id="g2Name">
+          <input type="text" id="g2Name" autocomplete="name">
         </div>
 
         <fieldset class="field span-2">
@@ -254,25 +280,26 @@
 
         <div class="field">
           <label for="g2Phone" data-t="phone">Phone number</label>
-          <input type="tel" id="g2Phone">
+          <input type="tel" id="g2Phone" autocomplete="tel">
+          <p class="error"></p>
         </div>
 
         <div class="field">
           <label for="g2Email" data-t="email">Email</label>
-          <input type="email" id="g2Email">
+          <input type="email" id="g2Email" autocomplete="email">
           <p class="error"></p>
         </div>
       </div>
     </section>
 
     <!-- step 6: emergency -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">6</span><span data-t="s6Title">Someone else we can call</span></h2>
-      <p class="lead" data-t="s6Lead">If we cannot reach you, who should we call? This must be someone other than the parents above.</p>
+      <p class="reg-lead" data-t="s6Lead">If we cannot reach you, who should we call? This must be someone other than the parents above.</p>
       <div class="grid">
         <div class="field span-2">
           <label for="emName" data-t="theirName">Their full name <span class="req">*</span></label>
-          <input type="text" id="emName" required>
+          <input type="text" id="emName" required autocomplete="name">
           <p class="error"></p>
         </div>
         <div class="field">
@@ -282,30 +309,30 @@
         </div>
         <div class="field">
           <label for="emPhone" data-t="phone">Phone number <span class="req">*</span></label>
-          <input type="tel" id="emPhone" required>
+          <input type="tel" id="emPhone" required autocomplete="tel">
           <p class="error"></p>
         </div>
       </div>
     </section>
 
     <!-- step 7: agreements -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">7</span><span data-t="s7Title">Do you agree?</span></h2>
-      <p class="lead" data-t="s7Lead">Please check all four boxes. <span class="req">*</span></p>
+      <p class="reg-lead" data-t="s7Lead">Please check all four boxes. <span class="req">*</span></p>
 
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" class="policy" required>
         <span data-t="p1">I have read the rules of FUTA Islamic School and I agree to support them.</span>
       </label>
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" class="policy" required>
         <span data-t="p2">I will work together with the school to help my child do well in class, in faith, and in behavior.</span>
       </label>
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" class="policy" required>
         <span data-t="p3">I understand that money paid for registration and tuition is not given back once the period has started.</span>
       </label>
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" class="policy" required>
         <span data-t="p4">I will tell the school about any health, allergy, learning, or behavior needs, and when my child is absent.</span>
       </label>
@@ -313,19 +340,19 @@
 
       <hr class="soft">
 
-      <label class="checkbox big">
+      <label class="reg-check big">
         <input type="checkbox" id="noMedia">
         <span data-t="mediaOptOut">I do NOT want my child to appear in school photos or videos. (Leave this empty if photos are fine.)</span>
       </label>
     </section>
 
     <!-- step 8: signature -->
-    <section class="card">
+    <section class="reg-card">
       <h2><span class="step">8</span><span data-t="s8Title">Sign here</span></h2>
       <div class="grid">
         <div class="field span-2">
           <label for="sigName" data-t="yourName">Your full name <span class="req">*</span></label>
-          <input type="text" id="sigName" required>
+          <input type="text" id="sigName" required autocomplete="name">
           <p class="error"></p>
         </div>
         <div class="field span-2">
@@ -352,12 +379,12 @@
     </div>
   </form>
 
-  <section class="card success" id="successPanel" hidden>
+  <section class="reg-card success" id="successPanel" hidden>
     <div class="check"><svg><use href="#ic-check"></use></svg></div>
     <h2 data-t="thanks">JazakAllahu Khayran!</h2>
     <p><span data-t="gotIt">We received your registration. We will contact you at</span> <strong id="successEmail"></strong></p>
-    <p class="lead" id="successSummary"></p>
-    <p class="lead" data-t="bringPayment">Please bring your payment to the school office.</p>
+    <p class="reg-lead" id="successSummary"></p>
+    <p class="reg-lead" data-t="bringPayment">Please bring your payment to the school office.</p>
     <button type="button" class="submit-btn ghost" id="anotherBtn" data-t="another">Register another family</button>
   </section>
 
@@ -370,7 +397,7 @@
 
 <!-- one of these per child -->
 <template id="studentTemplate">
-  <section class="card student-card">
+  <section class="reg-card student-card">
     <div class="student-head">
       <h2><svg class="kid-ico"><use href="#ic-child"></use></svg><span data-t="child">Child</span> <span class="student-num"></span></h2>
       <button type="button" class="remove-btn" data-t="remove">Remove</button>
@@ -394,7 +421,7 @@
         <input type="text" data-field="age" readonly class="readonly" placeholder="-">
       </div>
 
-      <fieldset class="field span-2">
+      <fieldset class="field">
         <legend data-t="boyGirl">Boy or girl? <span class="req">*</span></legend>
         <div class="choices two" data-required data-name="gender">
           <label class="choice"><input type="radio" data-field="gender" value="Male"><span data-t="boy">Boy</span></label>
@@ -433,7 +460,7 @@
 
       <div class="field span-2 conditional" data-panel="allergyDetails" hidden>
         <label data-t="allergyWhat">What is your child allergic to? <span class="req">*</span></label>
-        <textarea data-field="allergyDetails" rows="2" data-ph="allergyPh" placeholder="Peanuts, milk, bee stings..."></textarea>
+        <textarea data-field="allergyDetails" rows="2" required data-ph="allergyPh" placeholder="Peanuts, milk, bee stings..."></textarea>
         <p class="error"></p>
       </div>
 
@@ -448,15 +475,23 @@
 
       <div class="field span-2 conditional" data-panel="medicalDetails" hidden>
         <label data-t="healthWhat">Please tell us about it <span class="req">*</span></label>
-        <textarea data-field="medicalDetails" rows="2" data-ph="healthPh" placeholder="Asthma, medicine they take, help they need..."></textarea>
+        <textarea data-field="medicalDetails" rows="2" required data-ph="healthPh" placeholder="Asthma, medicine they take, help they need..."></textarea>
         <p class="error"></p>
-        <p class="lead private" data-t="healthPrivate">This stays private between you and the administration.</p>
+        <p class="reg-lead private" data-t="healthPrivate">This stays private between you and the administration.</p>
       </div>
 
       <div class="field span-2">
         <label data-t="oldSchool">Old school (if they went to one)</label>
         <input type="text" data-field="prevSchool">
       </div>
+
+      <fieldset class="field">
+        <legend data-t="afterschoolQ">Do you want the afterschool program?</legend>
+        <div class="choices two" data-name="afterschool">
+          <label class="choice"><input type="radio" data-field="afterschool" value="Yes"><span data-t="yes">Yes</span></label>
+          <label class="choice"><input type="radio" data-field="afterschool" value="No"><span data-t="no">No</span></label>
+        </div>
+      </fieldset>
     </div>
   </section>
 </template>
