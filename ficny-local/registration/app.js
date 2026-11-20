@@ -25,8 +25,9 @@
 
   // Never restored from a draft. Agreeing to the rules and signing are acts the
   // parent has to perform deliberately each time, not something a saved draft
-  // should tick on their behalf. 'website' is the spam trap.
-  var SKIP_IN_DRAFT = ['rulesAck', 'signature', 'website'];
+  // should tick on their behalf. 'website' is the spam trap. 'sigDate' is
+  // always today, so a draft from yesterday must not bring yesterday back.
+  var SKIP_IN_DRAFT = ['rulesAck', 'signature', 'website', 'sigDate'];
 
   // ---------------------------------------------------------------- money --
   // Rates come from the 2026-2027 Rules & Regulations: 1 child $60, 2 $100,
@@ -476,9 +477,9 @@
     form.querySelectorAll('[required]').forEach(function (el) {
       if (el.closest('[hidden]')) return;
 
-      var blank = el.type === 'reg-check' ? !el.checked : !el.value.trim();
+      var blank = el.type === 'checkbox' ? !el.checked : !el.value.trim();
       if (blank) {
-        flag(el, el.type === 'reg-check' ? t('errCheck') : t('errRequired'));
+        flag(el, el.type === 'checkbox' ? t('errCheck') : t('errRequired'));
       }
     });
 
@@ -641,7 +642,7 @@
       form.querySelectorAll('input[id], textarea[id]').forEach(function (el) {
         if (el.closest('.student-card')) return;
         if (SKIP_IN_DRAFT.indexOf(el.id) !== -1) return;
-        snapshot.fields[el.id] = el.type === 'reg-check' ? el.checked : el.value;
+        snapshot.fields[el.id] = el.type === 'checkbox' ? el.checked : el.value;
       });
       ['g1Rel', 'g2Rel'].forEach(function (n) { snapshot[n] = chosen(n); });
       localStorage.setItem(DRAFT_KEY, JSON.stringify(snapshot));
@@ -676,9 +677,11 @@
     });
 
     Object.keys(saved.fields || {}).forEach(function (id) {
+      // also checked here, for drafts saved before a field joined the list
+      if (SKIP_IN_DRAFT.indexOf(id) !== -1) return;
       var el = document.getElementById(id);
       if (!el) return;
-      if (el.type === 'reg-check') el.checked = saved.fields[id];
+      if (el.type === 'checkbox') el.checked = saved.fields[id];
       else el.value = saved.fields[id];
     });
 

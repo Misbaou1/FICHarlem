@@ -63,8 +63,18 @@ def main():
     print('    %d files' % (len(SHIPPED) + 2))
 
     print('3. rebuild the preview page')
-    for line in run('build-preview.py', HERE).splitlines():
-        print('   ', line)
+    # This step downloads the live ficny.org page. If the site is down, keep
+    # the existing preview page rather than blocking dist/ from being rebuilt.
+    out = subprocess.run([sys.executable, 'build-preview.py'], cwd=HERE,
+                         capture_output=True, text=True)
+    if out.returncode != 0:
+        print('    WARNING: skipped, could not refresh from the live site.')
+        print('    volunteer-form.html keeps its previously inlined form.')
+        for line in (out.stdout + out.stderr).strip().splitlines():
+            print('     ', line)
+    else:
+        for line in out.stdout.strip().splitlines():
+            print('   ', line)
 
     print('4. assemble dist/')
     if os.path.isdir(DIST):

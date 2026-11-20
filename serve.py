@@ -22,8 +22,16 @@ class CleanURLHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
         local = super().translate_path(path)
 
-        # an exact hit wins, including real directories
-        if os.path.exists(local) and not os.path.isdir(local):
+        # an exact file hit wins
+        if os.path.isfile(local):
+            return local
+
+        # A directory with an index.html wins over a same-named .html file.
+        # Returning the directory lets the stock handler redirect /registration
+        # to /registration/ (so the page's relative links resolve) and then
+        # serve its index.html. Checking the .html first served a stale
+        # registration.html against the current registration/app.js.
+        if os.path.isdir(local) and os.path.isfile(os.path.join(local, 'index.html')):
             return local
 
         # /about-us  ->  about-us.html
@@ -31,12 +39,6 @@ class CleanURLHandler(SimpleHTTPRequestHandler):
             candidate = local.rstrip('/') + '.html'
             if os.path.isfile(candidate):
                 return candidate
-
-        # /  and  /some-dir/  ->  index.html inside it
-        if os.path.isdir(local):
-            index = os.path.join(local, 'index.html')
-            if os.path.isfile(index):
-                return index
 
         return local
 
